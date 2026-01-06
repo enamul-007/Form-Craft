@@ -1,8 +1,13 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Save, RefreshCw, FileText, ArrowLeft, X, Plus, Trash2, AlertCircle, CheckCircle, Loader } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function UserCreationForm() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: '',
     username: '',
@@ -41,22 +46,22 @@ export default function UserCreationForm() {
   /* ---------- default dataset ---------- */
   const loadDefaultDataset = () => {
     setFormData({
-      name: 'Leanne Graham',
-      username: 'Bret',
-      email: 'Sincere@april.biz',
-      phone: '1-770-736-8031 x56442',
-      website: 'hildegard.org',
+      name: 'Enamul Hoque',
+      username: 'Enamul Khan',
+      email: 'anamulkhan523@gmail.com',
+      phone: '01316907695',
+      website: 'www.enamulkhan.com',
       address: {
-        street: 'Kulas Light',
-        suite: 'Apt. 556',
-        city: 'Gwenborough',
-        zipcode: '92998-3874',
+        street: 'patuakhali',
+        suite: 'barishal',
+        city: 'Dhaka',
+        zipcode: '1280',
         geo: { lat: '-37.3159', lng: '81.1496' }
       },
       company: {
-        name: 'Romaguera-Crona',
-        catchPhrase: 'Multi-layered client-server neural-net',
-        bs: 'harness real-time e-markets'
+        name: 'Traideas',
+        catchPhrase: 'Make a technology',
+        bs: 'Software Company'
       }
     });
     setIsDirty(true);
@@ -128,7 +133,7 @@ export default function UserCreationForm() {
     setLastSaved(new Date().toLocaleTimeString());
     setSaveStatus('Draft saved');
     setIsDirty(false);
-    setTimeout(() => setSaveStatus(''), 3000);
+    setTimeout(() => setSaveStatus(''), 1000);
   };
 
   const handleReset = () => {
@@ -149,6 +154,7 @@ export default function UserCreationForm() {
     setTimeout(() => setSaveStatus(''), 3000);
   };
 
+  /* ---------- submit ---------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
@@ -156,15 +162,28 @@ export default function UserCreationForm() {
       setTimeout(() => setSaveStatus(''), 3000);
       return;
     }
+
     setIsSaving(true);
-    await new Promise((r) => setTimeout(r, 2000));
-    console.log('Submitted', formData);
-    setSaveStatus('User created successfully!');
-    setIsSaving(false);
-    setIsDirty(false);
-    setTimeout(() => {
-      alert('User created! Redirecting to list...');
-    }, 1000);
+
+    try {
+      // 🔹 Send to JSON Server / Fake API
+      const response = await axios.post('http://localhost:5000/users', formData);
+      console.log('User Created:', response.data);
+
+      setSaveStatus('User created successfully!');
+      setIsDirty(false);
+
+      setTimeout(() => {
+        navigate('/'); 
+      }, 100);
+
+    } catch (err) {
+      console.error('Failed to create user', err);
+      setSaveStatus('Error creating user!');
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setSaveStatus(''), 3000);
+    }
   };
 
   /* ---------- UI ---------- */
@@ -201,10 +220,10 @@ export default function UserCreationForm() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
           <div
             className={`p-3 rounded-lg flex items-center gap-2 ${saveStatus.includes('success') || saveStatus.includes('saved') || saveStatus.includes('loaded')
-                ? 'bg-green-50 text-green-700 border border-green-200'
-                : saveStatus.includes('error') || saveStatus.includes('fix')
-                  ? 'bg-red-50 text-red-700 border border-red-200'
-                  : 'bg-blue-50 text-blue-700 border border-blue-200'
+              ? 'bg-green-50 text-green-700 border border-green-200'
+              : saveStatus.includes('error') || saveStatus.includes('fix')
+                ? 'bg-red-50 text-red-700 border border-red-200'
+                : 'bg-blue-50 text-blue-700 border border-blue-200'
               }`}
           >
             <CheckCircle size={16} />

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Plus, ChevronRight, Mail, Users, Phone, Globe } from 'lucide-react';
+import { Search, Plus, ChevronRight, Mail, Users, Phone, Globe, DeleteIcon, Trash } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../common-component/Pagination';
 
@@ -32,6 +32,20 @@ export default function UserManagementList() {
         };
         fetchUsers();
     }, []);
+
+    const handleDeleteUser = async (e, userId) => {
+        e.stopPropagation(); // 🔥 row click বন্ধ করবে
+        if (!window.confirm('Are you sure you want to delete this user?')) return;
+
+        try {
+            await axios.delete(`http://localhost:5000/users/${userId}`);
+            setUsers(prev => prev.filter(user => user.id !== userId));
+        } catch (err) {
+            console.error('Failed to delete user', err);
+            alert('Delete failed');
+        }
+    };
+
 
     // 🔍 Search filter
     const filteredUsers = users.filter(user =>
@@ -144,9 +158,18 @@ export default function UserManagementList() {
                                             {user.company?.name} • {user.address?.city}
                                         </div>
                                     </div>
+                                    <button
+                                        onClick={(e) => handleDeleteUser(e, user.id)}
+                                        className="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition group-hover:opacity-100"
+                                        title="Delete User"
+                                    >
+                                        <Trash size={22} />
+                                    </button>
+
 
                                     <ChevronRight size={24} className="text-slate-400 group-hover:text-blue-600" />
                                 </div>
+
                             ))}
                         </div>
                     )}
