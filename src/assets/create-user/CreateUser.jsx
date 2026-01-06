@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, RefreshCw, FileText, ArrowLeft, X, Plus, Trash2, AlertCircle, CheckCircle, Loader } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function UserCreationForm() {
   const [formData, setFormData] = useState({
@@ -174,9 +175,9 @@ export default function UserCreationForm() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+              <Link to={"/"} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
                 <ArrowLeft size={20} className="text-slate-600" />
-              </button>
+              </Link>
               <div>
                 <h1 className="text-2xl font-bold text-slate-900">Create New User</h1>
                 <p className="text-sm text-slate-600">Fill in the details to add a new user</p>

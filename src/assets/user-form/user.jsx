@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import {
     ArrowLeft, Edit2, Save, Mail, Phone, Briefcase, MapPin, Globe,
     AlertCircle, CheckCircle, Loader, Building
@@ -176,9 +176,9 @@ export default function UserDetailsEdit() {
             <div className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-10">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <button onClick={() => window.history.back()} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
+                        <Link to={"/"} className="p-2 hover:bg-slate-100 rounded-lg transition-colors">
                             <ArrowLeft size={20} className="text-slate-600" />
-                        </button>
+                        </Link>
                         <div>
                             <h1 className="text-2xl font-bold text-slate-900">{isEditMode ? 'Edit User' : 'User Details'}</h1>
                             <p className="text-sm text-slate-600">{isEditMode ? 'Update user information' : 'View user information'}</p>
