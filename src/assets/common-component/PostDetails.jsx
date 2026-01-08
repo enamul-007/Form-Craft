@@ -19,6 +19,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CommentIcon from '@mui/icons-material/Comment';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import apiService from '../service/ApiService';
+import { ENDPOINTS } from '../service/Endpoints';
 
 /* 🔹 Styled Components */
 const HeroImage = styled('img')({
@@ -55,7 +57,8 @@ export default function PostDetails() {
         if (!id) return;
 
         setLoading(true);
-        axios.get(`http://localhost:5000/posts/${id}`)
+        apiService.getById(ENDPOINTS.POSTS, id)
+
             .then(res => {
                 setPost(res.data);
                 setLoading(false);

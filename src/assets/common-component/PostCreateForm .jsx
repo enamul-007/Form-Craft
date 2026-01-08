@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { Save, RefreshCw, FileText, ArrowLeft, AlertCircle, CheckCircle, Loader, Image } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import apiService from '../service/ApiService';
+import { ENDPOINTS } from '../service/Endpoints';
 
 export default function PostCreateForm() {
     const navigate = useNavigate();
@@ -33,7 +35,7 @@ export default function PostCreateForm() {
     const fetchPost = async () => {
         setIsLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5000/posts/${id}`);
+            const response = await apiService.getById(ENDPOINTS.POSTS, id);
             setFormData({
                 userName: response.data.userName || 'Enamul Hoque',
                 date: response.data.date || new Date().toISOString().split('T')[0],
@@ -126,13 +128,14 @@ export default function PostCreateForm() {
 
         try {
             if (isEditMode) {
-                const response = await axios.patch(`http://localhost:5000/posts/${id}`, formData);
+                const response = apiService.update(ENDPOINTS.POSTS, id, formData);
                 console.log('Post Updated:', response.data);
                 setSaveStatus('Post updated successfully!');
                 setIsDirty(false);
                 navigate(`/post-details/${id}`); // 🔹 Navigate to Post Details after update
             } else {
-                const response = await axios.post('http://localhost:5000/posts', formData);
+                const response = apiService.create(ENDPOINTS.POSTS, formData);
+
                 console.log('Post Created:', response.data);
                 setSaveStatus('Post created successfully!');
                 setIsDirty(false);
@@ -195,10 +198,10 @@ export default function PostCreateForm() {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
                     <div
                         className={`p-3 rounded-lg flex items-center gap-2 ${saveStatus.includes('success') || saveStatus.includes('saved') || saveStatus.includes('loaded')
-                                ? 'bg-green-50 text-green-700 border border-green-200'
-                                : saveStatus.includes('error') || saveStatus.includes('fix')
-                                    ? 'bg-red-50 text-red-700 border border-red-200'
-                                    : 'bg-blue-50 text-blue-700 border border-blue-200'
+                            ? 'bg-green-50 text-green-700 border border-green-200'
+                            : saveStatus.includes('error') || saveStatus.includes('fix')
+                                ? 'bg-red-50 text-red-700 border border-red-200'
+                                : 'bg-blue-50 text-blue-700 border border-blue-200'
                             }`}
                     >
                         <CheckCircle size={16} />
@@ -322,7 +325,13 @@ export default function PostCreateForm() {
                 <div className="flex gap-4 justify-end sticky bottom-0 bg-white p-4 rounded-xl shadow-lg border border-slate-200">
                     <button
                         type="button"
-                        onClick={() => navigate('/posts')}
+                        onClick={() => {
+                            if (isEditMode) {
+                                navigate(`/post-details/${id}`); // edit mode → post details
+                            } else {
+                                navigate('/posts'); // create mode → posts list
+                            }
+                        }}
                         className="px-6 py-3 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors font-medium"
                     >
                         Cancel
@@ -336,6 +345,7 @@ export default function PostCreateForm() {
                         {isEditMode ? 'Update Post' : 'Create Post'}
                     </button>
                 </div>
+
             </div>
         </div>
     );
